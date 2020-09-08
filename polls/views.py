@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth.models import User
 from ipware import get_client_ip
 from .models import Poll, Choices
@@ -75,25 +76,30 @@ def add_poll(request):
         current_user = public_user
     else:
         current_user = request.user
+    n=3
     if request.method == 'POST':
-        p_form = PollCreateForm(request.POST, instance=Poll())
-        c_form = [ChoiceCreateForm(request.POST, prefix = str(x), instance=Choices()) for x in range(0,3)]
+        p_form = PollCreateForm(request.POST,request.FILES, instance=Poll())
+        c_form = [ChoiceCreateForm(request.POST,request.FILES, prefix = str(x), instance=Choices()) for x in range(0,n)]
         if p_form.is_valid() and all([cf.is_valid() for cf in c_form]):
+            # print(p_form.cleaned_data)
+            # for cf in c_form:
+            #     print(cf.cleaned_data)
             new_poll = p_form.save()
             for cf in c_form:
                 new_choice = cf.save(commit=False)
                 new_choice.poll = new_poll
                 new_choice.save()
-            
+            messages.success(request, f'You have successfuly created a poll')
             return redirect('home')
             #change this
     else:
         p_form = PollCreateForm(instance=Poll())
-        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choices()) for x in range(0,3)]
-        context = {
+        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choices()) for x in range(0,2)]
+        ''' We need atleast 2 choices for a poll '''
+    context = {
         'p_form':p_form,
         'c_form':c_form
     }
-    return render(request, 'poll/',context)
+    return render(request, 'polls/new_poll.html',context)
 
         
