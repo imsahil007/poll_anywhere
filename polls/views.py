@@ -31,14 +31,15 @@ class PollDetailView(DetailView):
     # def get_context_data(self,**args, **kwargs):
     #     return True
 
-# class UserPollListView(ListView):
-#     model = Poll
-#     template_name = 'poll/poll_list.html'
-#     context_object_name = 'polls'
-#     paginate_by = 2
+class UserPollListView(LoginRequiredMixin,ListView):
+    model = Poll
+    template_name = 'poll/poll_list.html'
+    context_object_name = 'polls'
+    paginate_by = 2
 
-#     def get_queryset(self):
-#         return Poll.objects.filter(author = self.request.user).order_by('time_posted')
+    def get_queryset(self):
+        user = get_object_or_404(User, username = self.kwargs.get('username'))
+        return Poll.objects.filter(author = user).order_by('time_posted')
 
 class PollUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poll
