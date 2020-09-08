@@ -19,7 +19,7 @@ class Poll(models.Model):
     def get_absolute_url(self):
         return reverse("poll-detail", kwargs={"pk": self.pk})
     
-class PollChoices(models.Model):
+class Choices(models.Model):
     choice_text = models.CharField(max_length=100)
     choice_image= models.ImageField(default = None, blank = True)
     choice_count = models.PositiveSmallIntegerField(default=0)

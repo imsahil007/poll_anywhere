@@ -1,12 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from ipware import get_client_ip
-from .models import Poll, PollChoices
+from .models import Poll, Choices
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import PollCreateForm, ChoiceCreateForm
+
 import hashlib
-public_user = User.objects.filter(username='public')
+public_user = User.objects.filter(username='public').first()
 def create_hash(title):
     hash = hashlib.sha1(title.encode("UTF-8")).hexdigest()
     return str(hash[:10])
@@ -55,16 +57,8 @@ class PollUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-class PollCreateView( CreateView):
-    model = Poll
-    fields = ['title', 'question', 'question_image']
 
-    def form_valid(self, form):
-        if self.request.user:
-            form.instance.author = self.request.user
-        else:
-            form.instance.author = public_user
-        return super().form_valid(form)
+
         
 class PollDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
     model = Poll
@@ -75,3 +69,31 @@ class PollDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
         if self.request.user == poll.author:
             return True
         return False
+
+def add_poll(request):
+    if request.user.is_anonymous:
+        current_user = public_user
+    else:
+        current_user = request.user
+    if request.method == 'POST':
+        p_form = PollCreateForm(request.POST, instance=Poll())
+        c_form = [ChoiceCreateForm(request.POST, prefix = str(x), instance=Choices()) for x in range(0,3)]
+        if p_form.is_valid() and all([cf.is_valid() for cf in c_form]):
+            new_poll = p_form.save()
+            for cf in c_form:
+                new_choice = cf.save(commit=False)
+                new_choice.poll = new_poll
+                new_choice.save()
+            
+            return redirect('home')
+            #change this
+    else:
+        p_form = PollCreateForm(instance=Poll())
+        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choices()) for x in range(0,3)]
+        context = {
+        'p_form':p_form,
+        'c_form':c_form
+    }
+    return render(request, 'poll/',context)
+
+        
