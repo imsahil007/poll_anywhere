@@ -6,7 +6,7 @@ from .models import Poll, PollChoices
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import hashlib
-
+public_user = User.objects.filter(username='public')
 def create_hash(title):
     hash = hashlib.sha1(title.encode("UTF-8")).hexdigest()
     return str(hash[:10])
@@ -55,12 +55,15 @@ class PollUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-class PollCreateView(LoginRequiredMixin, CreateView):
+class PollCreateView( CreateView):
     model = Poll
-    fields = ['title']
+    fields = ['title', 'question', 'question_image']
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        if self.request.user:
+            form.instance.author = self.request.user
+        else:
+            form.instance.author = public_user
         return super().form_valid(form)
         
 class PollDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
