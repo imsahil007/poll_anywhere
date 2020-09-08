@@ -8,7 +8,7 @@ from django.urls import reverse
 class Poll(models.Model):
     title = models.CharField(max_length=100)
     question = models.TextField(max_length=250)
-    question_image = models.ImageField()
+    question_image = models.ImageField(default=None)
     time_posted = models.DateTimeField(default=timezone.now)
     #considering global polls can never be deleted by any user
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -22,5 +22,6 @@ class Poll(models.Model):
 class PollChoices(models.Model):
     choice_text = models.CharField(max_length=100)
     choice_image= models.ImageField(default = None)
+    choice_count = models.PositiveSmallIntegerField(default=0)
     poll = models.ForeignKey(Poll, on_delete= models.CASCADE)
 

@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 from ipware import get_client_ip
-from .models import Poll
+from .models import Poll, PollChoices
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import hashlib
 
 def create_hash(title):
@@ -26,12 +28,46 @@ def home(request):
 
 class PollDetailView(DetailView):
     model = Poll
+    # def get_context_data(self,**args, **kwargs):
+    #     return True
 
-class UserPollListView(ListView):
+# class UserPollListView(ListView):
+#     model = Poll
+#     template_name = 'poll/poll_list.html'
+#     context_object_name = 'polls'
+#     paginate_by = 2
+
+#     def get_queryset(self):
+#         return Poll.objects.filter(author = self.request.user).order_by('time_posted')
+
+class PollUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poll
-    template_name = 'poll/poll_list.html'
-    context_object0_name = 'polls'
-    paginate_by = 2
+    fields = ['title']
 
-    def get_queryset(self):
-        return Poll.objects.filter(author = self.request.user).order_by('time_posted')
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        poll = self.get_object()
+        if self.request.user == poll.author:
+            return True
+        return False
+
+class PollCreateView(LoginRequiredMixin, CreateView):
+    model = Poll
+    fields = ['title']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+        
+class PollDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
+    model = Poll
+    success_url='/'
+
+    def test_func(self):
+        poll = self.get_object()
+        if self.request.user == poll.author:
+            return True
+        return False
