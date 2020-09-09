@@ -7,16 +7,14 @@ from .models import Poll, Choice
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import PollCreateForm, ChoiceCreateForm
+from django.contrib.auth import login, logout
 
-import hashlib
-import re
+
+
 import uuid
 
 public_user = User.objects.filter(username='public').first()
-# def create_hash(string):
-#     hash = hashlib.sha1(string.encode("UTF-8")).hexdigest()
-#     hash = re.sub('[^A-Za-z0-9]+', '', hash)
-#     return str(hash[-5:])
+
     
 def get_ip_address(request):
     # return HttpResponse("<h1>THIs is it</h1>")
@@ -112,16 +110,32 @@ def add_poll(request):
     return render(request, 'polls/new_poll.html',context)
 
 def poll_detail(request, link='new'):
-    if request.method == 'POST':
+    is_fake = False
+    if request.user.is_anonymous:
+        create_fake_user(request)
+        is_fake = True
+
+
+    if request.method == 'POST' and request.user not in Poll.objects.get(link=link).voters.all():
         option = Poll.objects.get(link=link).choice_set.get(id=int(request.POST["choice"]))
         option.choice_count= option.choice_count + 1
+        Poll.objects.get(link=link).voters.add(request.user)
         option.save()
-        return redirect('home')
+        if is_fake:
+            logout(request, request.user)
+        return redirect('poll-result', link)
     else:
+        if request.user in Poll.objects.get(link=link).voters.all():
+            messages.warning(request, 'You have already voted')
+            if is_fake:
+                logout(request, request.user)
+            return redirect('poll-result', link)
         context={
             "poll": Poll.objects.get(link=link),
             "choices": Poll.objects.get(link=link).choice_set.all()
         }
+        if is_fake:
+                logout(request, request.user)
         return render(request, 'polls/poll_detail.html',context)
 
 def result(request, link='new'):
@@ -141,3 +155,11 @@ def result(request, link='new'):
     return  render(request, 'polls/poll_result.html',context)
 
         
+def create_fake_user(request):
+    request.session.save()
+    username = str(request.session.session_key) + '@anonyvoter'
+    try:
+        user = User.objects.create_user(username)
+    except:
+        user = User.objects.get(username=username)
+    login(request, user)

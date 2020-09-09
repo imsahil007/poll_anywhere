@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from PIL import Image
+import os
 # Create your models here.
 
 class Poll(models.Model):
@@ -10,6 +11,7 @@ class Poll(models.Model):
     question = models.CharField(max_length=250)
     question_image = models.ImageField(blank=True, upload_to='question_image')
     time_posted = models.DateTimeField(default=timezone.now)
+    voters = models.ManyToManyField(User, related_name='voters')
     #considering global polls can never be deleted by any user
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     link = models.CharField(max_length=10)
@@ -28,11 +30,22 @@ class Poll(models.Model):
                 img.save(self.question_image.path)
         except:
             print('Image is not required')
+
+    def delete(self, *args, **kwargs):
+        url = self.question_image.url
+        users = self.voters
+        for user in users:
+            if user.username.endswith('@anaonyvoter'):
+                User.objects.delete(username=user.username)
+
+        super(Image, self).delete(*args, **kwargs)
+        if os.path.exists(url):
+            os.remove(url)
         
     
 class Choice(models.Model):
     choice_text = models.CharField(max_length=100)
-    choice_image= models.ImageField(blank = True)
+    choice_image= models.ImageField(blank = True,upload_to='choice_image')
     choice_count = models.PositiveSmallIntegerField(default=0)
     poll = models.ForeignKey(Poll, on_delete= models.CASCADE)
 
@@ -49,3 +62,9 @@ class Choice(models.Model):
                 img.save(self.choice_image.path)
         except:
             print('Image is not required')
+
+    def delete(self, *args, **kwargs):
+        url = self.choice_image.url
+        super(Image, self).delete(*args, **kwargs)
+        if os.path.exists(url):
+            os.remove(url)
