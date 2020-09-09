@@ -1,0 +1,26 @@
+{% extends "polls/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-3'></div>
+                <div class='col-md-6 mt-5 px-0 card'>
+                    <div class='card-header'>
+                    Online Poll - {{ poll.title }}
+                    </div>
+                    <div class='card-body'>
+                    {% if poll.question_image.url is not None%}<img  src="{{poll.question_image.url}}" class="rounded mx-auto d-block" alt="question image">{% endif %}
+                    <form method='POST'>
+                        {% csrf_token %}
+                        
+                        <div class='form-group mx-auto'>
+                            <button class='btn btn-outline-info' type='submit'>Request password reset</button>    
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                <div class='col-md-3'></div>
+            </div>
+        </div>
+
+{% endblock content %}

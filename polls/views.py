@@ -31,10 +31,6 @@ def home(request):
 
     return render(request,'polls/home.html')
 
-class PollDetailView(DetailView):
-    model = Poll
-    # def get_context_data(self,**args, **kwargs):
-    #     return True
 
 class UserPollListView(LoginRequiredMixin,ListView):
     model = Poll
@@ -46,7 +42,7 @@ class UserPollListView(LoginRequiredMixin,ListView):
         user = get_object_or_404(User, username = self.kwargs.get('username'))
         return Poll.objects.filter(author = user).order_by('time_posted')
 
-class PollUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PollUpdateView(UpdateView):
     model = Poll
     fields = ['title']
 
@@ -104,5 +100,14 @@ def add_poll(request):
         'c_form':c_form
     }
     return render(request, 'polls/new_poll.html',context)
+
+def poll_detail(request, link='new'):
+    # link='ed80a'
+    # return redirect('poll-result', link)
+    context={
+        "poll": Poll.objects.filter(link=link).first()
+    }
+    print(Poll.objects.filter(link=link).first())
+    return render(request, 'polls/poll_detail.html',context)
 
         
