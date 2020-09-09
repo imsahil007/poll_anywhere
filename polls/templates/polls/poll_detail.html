@@ -59,13 +59,16 @@
                     </form>
                     </div>
                 </div>
-                <div class='col-md-2 mt-5'></div>
+                <div class='col-md-2 mt-2'></div>
             </div>
-            <div class='row mx-auto mb-5'>
-            {% if user.is_authenticated %}
+            <div class='row mx-auto mb-2'>
                 <a type="button" href="{% url 'poll-result' poll.link %}" class="mx-auto mt-2 btn btn-info">Check Results</a>
-            {% endif %}
             </div>
+             {% if user.is_authenticated %}
+                <div class='row mx-auto mt-2 mb-5'>
+                    <a type="button" href="{% url 'poll-delete' poll.id %}" class="mx-auto mt-2 btn btn-danger">Delete this poll</a>
+                </div>
+            {% endif %}
         </div>
 
 {% endblock content %}

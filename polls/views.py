@@ -10,11 +10,13 @@ from .forms import PollCreateForm, ChoiceCreateForm
 
 import hashlib
 import re
+import uuid
+
 public_user = User.objects.filter(username='public').first()
-def create_hash(string):
-    hash = hashlib.sha1(string.encode("UTF-8")).hexdigest()
-    hash = re.sub('[^A-Za-z0-9]+', '', hash)
-    return str(hash[-5:])
+# def create_hash(string):
+#     hash = hashlib.sha1(string.encode("UTF-8")).hexdigest()
+#     hash = re.sub('[^A-Za-z0-9]+', '', hash)
+#     return str(hash[-5:])
     
 def get_ip_address(request):
     # return HttpResponse("<h1>THIs is it</h1>")
@@ -61,13 +63,20 @@ class PollUpdateView(UpdateView):
         
 class PollDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
     model = Poll
+    success_message = "Poll has been deleted successfully"
     success_url='/'
+    template_name = 'polls/poll_delete.html'
 
     def test_func(self):
         poll = self.get_object()
         if self.request.user == poll.author:
             return True
         return False
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.success(self.request, self.success_message )
+        return super(PollDeleteView, self).delete(request, *args, **kwargs)
 
 def add_poll(request):
     if request.user.is_anonymous:
@@ -82,14 +91,15 @@ def add_poll(request):
             
             new_poll = p_form.save(commit=False)
             new_poll.author = current_user
-            new_poll.link = create_hash(str(new_poll.pk))
+            poll_link = uuid.uuid1().hex[0:9]
+            new_poll.link = poll_link
             new_poll.save()
             for cf in c_form:
                 new_choice = cf.save(commit=False)
                 new_choice.poll = new_poll
                 new_choice.save()
             messages.success(request, f'You have successfuly created a poll')
-            return redirect('poll-detail')
+            return redirect('poll-detail', link = poll_link)
             #change this
     else:
         p_form = PollCreateForm(instance=Poll())
