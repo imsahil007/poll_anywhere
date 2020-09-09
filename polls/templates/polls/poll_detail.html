@@ -46,7 +46,8 @@
                         <div class='col-md-6 p-0 form-check'>
                             <div class='card mx-2 mb-5 btn-outline-success'>
                                 {% if choice.choice_image.url is not None %}
-                                <img src="{{choice.choice_image.url}}" class="img-responsive mx-auto mt-3" width = "150px" alt="choice_image">
+                                <img src="{{choice.choice_image.url}}" class="img-responsive mx-auto mt-3"  height="150px" alt="choice_image">
+                                {% comment %} <img class="card-img-top"  height="150px" width='auto' src="{{choice.choice_image.url}}" alt="Choice image"> {% endcomment %}
                                 {% endif %} 
 
                             <div class='card-body p-0 mx-auto'>
