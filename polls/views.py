@@ -104,7 +104,8 @@ def add_poll(request):
 def poll_detail(request, link='new'):
     if request.method == 'POST':
         option = Poll.objects.get(link=link).choice_set.get(id=int(request.POST["choice"]))
-        print(option)
+        option.choice_count= option.choice_count + 1
+        option.save()
         return redirect('home')
     else:
         context={
