@@ -31,16 +31,18 @@ class Poll(models.Model):
         except:
             print('Image is not required')
 
-    def delete(self, *args, **kwargs):
-        url = self.question_image.url
-        users = self.voters
-        for user in users:
-            if user.username.endswith('@anaonyvoter'):
-                User.objects.delete(username=user.username)
-
-        super(Image, self).delete(*args, **kwargs)
-        if os.path.exists(url):
+    def delete(self):
+        try:
+            url = self.choice_image.url
             os.remove(url)
+        except:
+            print('No image present')
+
+        users = self.voters.all()
+        for user in users:
+            self.voters.remove(user)
+        super(Poll, self).delete()
+        
         
     
 class Choice(models.Model):
@@ -64,7 +66,10 @@ class Choice(models.Model):
             print('Image is not required')
 
     def delete(self, *args, **kwargs):
-        url = self.choice_image.url
-        super(Image, self).delete(*args, **kwargs)
-        if os.path.exists(url):
+        try:
+            url = self.choice_image.url
             os.remove(url)
+        except:
+            print('No image present')
+        super(Image, self).delete(*args, **kwargs)
+        

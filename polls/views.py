@@ -18,14 +18,17 @@ public_user = User.objects.filter(username='public').first()
     
 def get_ip_address(request):
     # return HttpResponse("<h1>THIs is it</h1>")
-    # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-
-    # if x_forwarded_for:
-    #     ip = x_forwarded_for.split(',')[0]
-    # else:
-    #     ip = request.META.get('REMOTE_ADDR')
-    ip, is_routable = get_client_ip(request)
-    return ip
+    
+    ip = None
+    try:
+        ip, is_routable = get_client_ip(request)
+    except:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+    return str(ip).replace('.','_')+'@anonyuser'
 # Create your views here.
 def home(request):
 
@@ -112,7 +115,7 @@ def add_poll(request):
 def poll_detail(request, link='new'):
     is_fake = False
     if request.user.is_anonymous:
-        create_fake_user(request)
+        create_fake_user(request, username= get_ip_address(request))
         is_fake = True
 
 
@@ -122,20 +125,20 @@ def poll_detail(request, link='new'):
         Poll.objects.get(link=link).voters.add(request.user)
         option.save()
         if is_fake:
-            logout(request, request.user)
+            logout(request)
         return redirect('poll-result', link)
     else:
         if request.user in Poll.objects.get(link=link).voters.all():
             messages.warning(request, 'You have already voted')
             if is_fake:
-                logout(request, request.user)
+                logout(request)
             return redirect('poll-result', link)
         context={
             "poll": Poll.objects.get(link=link),
             "choices": Poll.objects.get(link=link).choice_set.all()
         }
         if is_fake:
-                logout(request, request.user)
+                logout(request)
         return render(request, 'polls/poll_detail.html',context)
 
 def result(request, link='new'):
@@ -155,9 +158,9 @@ def result(request, link='new'):
     return  render(request, 'polls/poll_result.html',context)
 
         
-def create_fake_user(request):
-    request.session.save()
-    username = str(request.session.session_key) + '@anonyvoter'
+def create_fake_user(request, username):
+    # request.session.save()
+    # username = str(request.session.session_key) + '@anonyvoter'
     try:
         user = User.objects.create_user(username)
     except:
