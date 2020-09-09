@@ -89,7 +89,7 @@ def add_poll(request):
                 new_choice.poll = new_poll
                 new_choice.save()
             messages.success(request, f'You have successfuly created a poll')
-            return redirect('home')
+            return redirect('poll-detail')
             #change this
     else:
         p_form = PollCreateForm(instance=Poll())
@@ -102,12 +102,15 @@ def add_poll(request):
     return render(request, 'polls/new_poll.html',context)
 
 def poll_detail(request, link='new'):
-    # link='ed80a'
-    # return redirect('poll-result', link)
-    context={
-        "poll": Poll.objects.get(link=link),
-        "choices": Poll.objects.get(link=link).choice_set.all()
-    }
-    return render(request, 'polls/poll_detail.html',context)
+    if request.method == 'POST':
+        option = Poll.objects.get(link=link).choice_set.get(id=int(request.POST["choice"]))
+        print(option)
+        return redirect('home')
+    else:
+        context={
+            "poll": Poll.objects.get(link=link),
+            "choices": Poll.objects.get(link=link).choice_set.all()
+        }
+        return render(request, 'polls/poll_detail.html',context)
 
         
