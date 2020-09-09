@@ -10,7 +10,7 @@
 
 			<form method='POST' enctype='multipart/form-data'>
 				{% csrf_token %}
-				<input type="hidden" id="counter" value="2"/>
+				<input type="hidden" name='counter' id="counter" value="2"/>
 				{% comment %} <fieldset class='form-group mx-auto'>
 					<legend class='border-bottom mb-4'>New Poll</legend>
 					<div class="form-group" id="div_id_title">

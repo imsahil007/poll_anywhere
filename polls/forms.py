@@ -1,4 +1,4 @@
-from .models import Poll, Choices
+from .models import Poll, Choice
 from django import forms
 
 class PollCreateForm(forms.ModelForm):
@@ -8,5 +8,5 @@ class PollCreateForm(forms.ModelForm):
 
 class ChoiceCreateForm(forms.ModelForm):
     class Meta:
-        model = Choices
+        model = Choice
         fields = ['choice_text', 'choice_image']

@@ -15,7 +15,7 @@ function addInput(){
                 'Choice text<span class=\"asteriskField\">*</span> </label> <div class=\"\"> <input type=\"text\" name=\"'+counter+'-choice_text\" maxlength=\"100\" class=\"textinput textInput form-control\" required id=\"id_'+counter+'-choice_text\"> </div> </div> <div id=\"div_id_'+counter+'-choice_image\" class=\"form-group\"> <label for=\"id_'+counter+'-choice_image\" class=\"\">\n'+
                 'Choice image\n'+
             '</label> <div class=\"\"> <input type=\"file\" name=\"'+counter+'-choice_image\" accept=\"image/*\" class=\"clearablefileinput form-control-file\" id=\"id_'+counter+'-choice_image\"> </div> </div>\n</div>\n</div>\n'
-          document.getElementById("counter").value = counter;
+          document.getElementById("counter").value = counter.toString();
      }
 }
 function removeInput(){
@@ -23,10 +23,8 @@ function removeInput(){
           alert("You have reached the minimum limit. You cannot remove any elements now");
      }
      else {
-          // document.getElementById("div_id_"+counter+"-choice_text").remove();
-          // document.getElementById("div_id_"+counter+"-choice_image").remove();
-           document.getElementById("option"+counter).remove();
-          counter--;
-          document.getElementById("counter").value = counter;
+               document.getElementById("option"+counter).remove();
+               counter--;
+               document.getElementById("counter").value = counter.toString();
      }
 }

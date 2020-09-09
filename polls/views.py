@@ -3,16 +3,18 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from ipware import get_client_ip
-from .models import Poll, Choices
+from .models import Poll, Choice
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import PollCreateForm, ChoiceCreateForm
 
 import hashlib
+import re
 public_user = User.objects.filter(username='public').first()
-def create_hash(title):
-    hash = hashlib.sha1(title.encode("UTF-8")).hexdigest()
-    return str(hash[:10])
+def create_hash(string):
+    hash = hashlib.sha1(string.encode("UTF-8")).hexdigest()
+    hash = re.sub('[^A-Za-z0-9]+', '', hash)
+    return str(hash[-5:])
     
 def get_ip_address(request):
     # return HttpResponse("<h1>THIs is it</h1>")
@@ -76,15 +78,16 @@ def add_poll(request):
         current_user = public_user
     else:
         current_user = request.user
-    n=3
     if request.method == 'POST':
         p_form = PollCreateForm(request.POST,request.FILES, instance=Poll())
-        c_form = [ChoiceCreateForm(request.POST,request.FILES, prefix = str(x), instance=Choices()) for x in range(0,n)]
+        n_Choice = int(request.POST['counter'])
+        c_form = [ChoiceCreateForm(request.POST,request.FILES, prefix = str(x), instance=Choice()) for x in range(0,n_Choice)]
         if p_form.is_valid() and all([cf.is_valid() for cf in c_form]):
-            # print(p_form.cleaned_data)
-            # for cf in c_form:
-            #     print(cf.cleaned_data)
-            new_poll = p_form.save()
+            
+            new_poll = p_form.save(commit=False)
+            new_poll.author = current_user
+            new_poll.link = create_hash(p_form.cleaned_data['question'])
+            new_poll.save()
             for cf in c_form:
                 new_choice = cf.save(commit=False)
                 new_choice.poll = new_poll
@@ -94,8 +97,8 @@ def add_poll(request):
             #change this
     else:
         p_form = PollCreateForm(instance=Poll())
-        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choices()) for x in range(0,2)]
-        ''' We need atleast 2 choices for a poll '''
+        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choice()) for x in range(0,2)]
+        ''' We need atleast 2 Choice for a poll '''
     context = {
         'p_form':p_form,
         'c_form':c_form
