@@ -67,7 +67,9 @@
             <div class='row mx-auto mb-2'>
                 <a type="button" href="{% url 'poll-result' poll.link %}" class="mx-auto mt-2 btn btn-info">Check Results</a>
             </div>
-             {% if user.is_authenticated %}
+           
+             {% if user.is_authenticated  and poll.author is user %}
+            
                 <div class='row mx-auto mt-2 mb-5'>
                     <a type="button" href="{% url 'poll-delete' poll.id %}" class="mx-auto mt-2 btn btn-danger">Delete this poll</a>
                 </div>

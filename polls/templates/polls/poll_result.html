@@ -5,12 +5,18 @@
         <div class='container'>
             
             <div class='row'>
-                <div class="card mt-5 mx-auto" >
-                <canvas id="pie-chart"  class="card-img-top"></canvas>
-                <div class="card-body">
-                <p class="card-text mx-auto text-center">{{poll.question}}</p>
+
+                <div class='col'></div>
+                <div class='col-md-6'>
+                  <div class="card mt-5 mx-auto" >
+                    <canvas id="pie-chart"  class="card-img-top"></canvas>
+                    <div class="card-body">
+                      <p class="card-text mx-auto text-center">{{poll.question}}</p>
+                    </div>
+                  </div>
                 </div>
-                </div>
+                <div class='col'></div>
+
 
                     
 
@@ -41,7 +47,7 @@
 
   </script>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated  and poll.author is user  %}
         <div class='row mx-auto mb-5'>
           <a type="button" href="{% url 'poll-delete' poll.id %}" class="mx-auto mt-2 btn btn-danger">Delete this poll</a>
         </div>

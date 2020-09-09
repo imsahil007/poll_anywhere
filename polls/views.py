@@ -149,9 +149,15 @@ def result(request, link='new'):
     labels = []
     data = []
     queryset = Poll.objects.get(link= link).choice_set.order_by('-choice_count')
+    empty_poll_flag = True
     for choice in queryset:
         labels.append(choice.choice_text)
+        if int(choice.choice_count) != 1:
+            empty_poll_flag = False
         data.append(choice.choice_count-1)
+    if empty_poll_flag:
+        for choice_count in range(len(data)):
+            data[choice_count] = data[choice_count] + 1
     context = {
         'poll':Poll.objects.get(link= link),
         'labels': labels,
