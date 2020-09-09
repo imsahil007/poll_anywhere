@@ -114,4 +114,20 @@ def poll_detail(request, link='new'):
         }
         return render(request, 'polls/poll_detail.html',context)
 
+def result(request, link='new'):
+    if link =='poll/result':
+        return redirect('poll-create')
+    labels = []
+    data = []
+    queryset = Poll.objects.get(link= link).choice_set.order_by('-choice_count')
+    for choice in queryset:
+        labels.append(choice.choice_text)
+        data.append(choice.choice_count)
+    context = {
+        'poll':Poll.objects.get(link= link),
+        'labels': labels,
+        'data': data,
+    }
+    return  render(request, 'polls/poll_result.html',context)
+
         

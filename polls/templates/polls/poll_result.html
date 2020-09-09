@@ -1,0 +1,54 @@
+{% extends "polls/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+        <div class='container'>
+            
+            <div class='row'>
+                <div class="card mt-5 mx-auto" >
+                <canvas id="pie-chart"  class="card-img-top"></canvas>
+                <div class="card-body">
+                <p class="card-text mx-auto text-center">{{poll.question}}</p>
+                </div>
+                </div>
+
+                    
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script>
+
+    var config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: {{ data|safe }},
+          backgroundColor: [
+            '#FF0000', '#ffa600', '#ff6361',  '#bc5090', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+          ],
+          label: 'Population'
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+    };
+
+  </script>
+    </div>
+    <div class='row mx-auto mb-5'>
+        {% if user.is_authenticated %}
+            <a type="button" href="#" class="mx-auto mt-2 btn btn-danger">Delete this poll</a>
+        {% endif %}
+
+        </div>
+                
+        </div>
+    
+
+{% endblock content %}
