@@ -82,7 +82,7 @@ def add_poll(request):
             
             new_poll = p_form.save(commit=False)
             new_poll.author = current_user
-            new_poll.link = create_hash(p_form.cleaned_data['question'])
+            new_poll.link = create_hash(str(new_poll.pk))
             new_poll.save()
             for cf in c_form:
                 new_choice = cf.save(commit=False)
@@ -105,9 +105,9 @@ def poll_detail(request, link='new'):
     # link='ed80a'
     # return redirect('poll-result', link)
     context={
-        "poll": Poll.objects.filter(link=link).first()
+        "poll": Poll.objects.get(link=link),
+        "choices": Poll.objects.get(link=link).choice_set.all()
     }
-    print(Poll.objects.filter(link=link).first())
     return render(request, 'polls/poll_detail.html',context)
 
         

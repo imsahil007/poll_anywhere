@@ -1,25 +1,43 @@
 {% extends "polls/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
         <div class='container'>
+                <script src="{% static 'vote.js' %}" language="Javascript" type="text/javascript"></script>
+
             <div class='row'>
-                <div class='col-md-3'></div>
-                <div class='col-md-6 mt-5 px-0 card'>
+                <div class='col-md-2'></div>
+                <div class='col-md-8 mt-5 px-0 card'>
                     <div class='card-header'>
                     Online Poll - {{ poll.title }}
                     </div>
                     <div class='card-body'>
-                    {% if poll.question_image.url is not None%}<img  src="{{poll.question_image.url}}" class="rounded mx-auto d-block" alt="question image">{% endif %}
+                    {% if poll.question_image.url is not None%}<img  src="{{poll.question_image.url}}" class="rounded mx-auto d-block mb-5" alt="question image">{% endif %}
+                        <p class="text-center font-weight-bold mx-auto mt-5">{{poll.question}}</p>
                     <form method='POST'>
                         {% csrf_token %}
-                        
-                        <div class='form-group mx-auto'>
-                            <button class='btn btn-outline-info' type='submit'>Request password reset</button>    
+                    <div class='row'>
+                        {% for choice in choices  %}
+                        <div class='col-md-6 p-0 form-check'>
+                            <div class='card m-3 mb-5 btn-outline-success'>
+                                {% if choice.choice_image.url is not None %}
+                                <img src="{{choice.choice_image.url}}" class="img-responsive mx-auto mt-3" width = "150px" alt="choice_image">
+                                {% endif %} 
+
+                            <div class='card-body p-0 mx-auto'>
+                            <input type="radio"  id="{{choice.id}}-choice" class="invisible" value="{{choice.id}}" onchange='this.form.submit();'>
+                            <label class="btn btn-default btn-lg stretched-link" for="{{choice.id}}-choice"><i class="fas fa-vote-yea m-2"></i>{{choice.choice_text}}</label></input>
+                          
+                            </div>
+                            </div>
                         </div>
+                        {% endfor %}
+                    </div>
+                    
                     </form>
                     </div>
                 </div>
-                <div class='col-md-3'></div>
+                <div class='col-md-2'></div>
             </div>
         </div>
 
