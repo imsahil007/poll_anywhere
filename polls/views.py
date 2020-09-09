@@ -45,7 +45,6 @@ class UserPollListView(LoginRequiredMixin,ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username = self.kwargs.get('username'))
         search_title = self.request.GET.get('search_title')
-        print(search_title, type(search_title))
 
         polls = None
         if search_title is None:
@@ -97,7 +96,6 @@ def add_poll(request):
                 new_choice.save()
             messages.success(request, f'You have successfuly created a poll')
             return redirect('poll-detail', link = poll_link)
-            #change this
     else:
         p_form = PollCreateForm(instance=Poll())
         c_form = [ChoiceCreateForm( prefix = str(x), instance=Choice()) for x in range(0,2)]
@@ -110,25 +108,32 @@ def add_poll(request):
 
 def poll_detail(request, link='new'):
     is_fake = False
+    voters = None
     if request.user.is_anonymous:
         create_fake_user(request, username= get_ip_address(request))
         is_fake = True
 
+    try:
+        voters =   Poll.objects.get(link=link).voters.all()
+    except:
+        voters = None
 
-    if request.method == 'POST' and request.user not in Poll.objects.get(link=link).voters.all():
-        option = Poll.objects.get(link=link).choice_set.get(id=int(request.POST["choice"]))
-        option.choice_count= option.choice_count + 1
-        Poll.objects.get(link=link).voters.add(request.user)
-        option.save()
-        if is_fake:
-            logout(request)
-        return redirect('poll-result', link)
-    else:
-        if request.user in Poll.objects.get(link=link).voters.all():
-            messages.warning(request, 'You have already voted')
+    if request.method == 'POST':
+        if voters is None or  (voters is not None and  request.user not in voters):
+            option = Poll.objects.get(link=link).choice_set.get(id=int(request.POST["choice"]))
+            option.choice_count= option.choice_count + 1
+            Poll.objects.get(link=link).voters.add(request.user)
+            option.save()
             if is_fake:
                 logout(request)
             return redirect('poll-result', link)
+    else:
+        if voters is not None:
+            if request.user in voters:
+                messages.warning(request, 'You have already voted')
+                if is_fake:
+                    logout(request)
+                return redirect('poll-result', link)
         context={
             "poll": Poll.objects.get(link=link),
             "choices": Poll.objects.get(link=link).choice_set.all()
@@ -146,7 +151,7 @@ def result(request, link='new'):
     queryset = Poll.objects.get(link= link).choice_set.order_by('-choice_count')
     for choice in queryset:
         labels.append(choice.choice_text)
-        data.append(choice.choice_count)
+        data.append(choice.choice_count-1)
     context = {
         'poll':Poll.objects.get(link= link),
         'labels': labels,

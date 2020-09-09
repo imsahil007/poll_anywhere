@@ -21,8 +21,8 @@ class Poll(models.Model):
     def get_absolute_url(self):
         return reverse("poll-detail", kwargs={"link": self.link})
     def save(self,*args, **kwargs):
+        super().save(*args, **kwargs)
         try:
-            super().save(*args, **kwargs)
             img = Image.open(self.question_image.path)
             output_size = (300,300)
             if img.height > 300 or img.width > 300:
@@ -48,15 +48,15 @@ class Poll(models.Model):
 class Choice(models.Model):
     choice_text = models.CharField(max_length=100)
     choice_image= models.ImageField(blank = True,upload_to='choice_image')
-    choice_count = models.PositiveSmallIntegerField(default=0)
+    choice_count = models.PositiveSmallIntegerField(default=1)
     poll = models.ForeignKey(Poll, on_delete= models.CASCADE)
 
     def __str__(self):
         return self.choice_text
 
     def save(self,*args, **kwargs):
+        super().save(*args, **kwargs)
         try:
-            super().save(*args, **kwargs)
             img = Image.open(self.choice_image.path)
             output_size = (150,150)
             if img.height > 150 or img.width > 150:
