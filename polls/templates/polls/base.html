@@ -10,7 +10,7 @@
         <title>PollAnywhere</title>
     {% endif %}
     <!-- CSS only -->
-<link rel="shortcut icon"  href="{% static 'favicon.ico' %}"/>
+<link rel="shortcut icon"  type="image/png" href="{% static 'favicon.ico' %}"/>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <!-- Add icon library -->
@@ -55,7 +55,7 @@
     {% block content %}
     {% endblock content %}
     </div>
-<!-- Footer -->
+{% comment %} <!-- Footer -->
 <footer class="page-footer font-small bg-dark pt-4">
 
 
@@ -66,7 +66,7 @@
   </div>
   <!-- Copyright -->
 
-</footer>
+</footer> {% endcomment %}
 <!-- Footer -->
 <!-- JS, Popper.js, and jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
