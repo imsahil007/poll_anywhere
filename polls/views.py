@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from ipware import get_client_ip
 from .models import Poll, Choice
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import PollCreateForm, ChoiceCreateForm
 from django.contrib.auth import login, logout
-
+from django.db.models import Q
 
 
 import uuid
@@ -39,26 +39,22 @@ class UserPollListView(LoginRequiredMixin,ListView):
     model = Poll
     template_name = 'poll/poll_list.html'
     context_object_name = 'polls'
-    paginate_by = 2
+    paginate_by = 5
+
 
     def get_queryset(self):
         user = get_object_or_404(User, username = self.kwargs.get('username'))
-        return Poll.objects.filter(author = user).order_by('time_posted')
+        search_title = self.request.GET.get('search_title')
+        print(search_title, type(search_title))
 
-class PollUpdateView(UpdateView):
-    model = Poll
-    fields = ['title']
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def test_func(self):
-        poll = self.get_object()
-        if self.request.user == poll.author:
-            return True
-        return False
-
+        polls = None
+        if search_title is None:
+             polls = Poll.objects.filter(author = user).order_by('-time_posted')
+        else:
+            polls = Poll.objects.filter(
+                Q(title__icontains=search_title) & Q(author = user)
+                ).order_by('-time_posted')
+        return polls
 
 
         
@@ -110,7 +106,7 @@ def add_poll(request):
         'p_form':p_form,
         'c_form':c_form
     }
-    return render(request, 'polls/new_poll.html',context)
+    return render(request, 'polls/poll_form.html',context)
 
 def poll_detail(request, link='new'):
     is_fake = False
@@ -140,6 +136,7 @@ def poll_detail(request, link='new'):
         if is_fake:
                 logout(request)
         return render(request, 'polls/poll_detail.html',context)
+
 
 def result(request, link='new'):
     if link =='poll/result':
