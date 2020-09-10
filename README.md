@@ -1,4 +1,4 @@
-# POLL CREATOR
+# POLL CREATOR [![Build Status](https://travis-ci.org/imsahil007/poll_anywhere.svg?branch=postgres)](https://travis-ci.org/imsahil007/poll_anywhere)
 ![](res/chart.png)
 
 
