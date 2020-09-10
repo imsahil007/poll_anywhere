@@ -31,24 +31,26 @@ class Poll(models.Model):
         except:
             print('Image is not required')
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         try:
-            url = self.choice_image.url
+            url = self.question_image.url
+            print('here')
             os.remove(url)
+            print('here2')
         except:
             print('No image present')
 
         users = self.voters.all()
         for user in users:
             self.voters.remove(user)
-        super(Poll, self).delete()
+        super().delete( self, *args, **kwargs)
         
         
     
 class Choice(models.Model):
     choice_text = models.CharField(max_length=100)
     choice_image= models.ImageField(blank = True,upload_to='choice_image')
-    choice_count = models.PositiveSmallIntegerField(default=1)
+    choice_count = models.PositiveSmallIntegerField(default=0)
     poll = models.ForeignKey(Poll, on_delete= models.CASCADE)
 
     def __str__(self):
@@ -71,5 +73,5 @@ class Choice(models.Model):
             os.remove(url)
         except:
             print('No image present')
-        super(Image, self).delete(*args, **kwargs)
+        super().delete(self,*args, **kwargs)
         

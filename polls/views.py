@@ -152,12 +152,12 @@ def result(request, link='new'):
     empty_poll_flag = True
     for choice in queryset:
         labels.append(choice.choice_text)
-        if int(choice.choice_count) != 1:
+        if int(choice.choice_count) != 0:
             empty_poll_flag = False
-        data.append(choice.choice_count-1)
+        data.append(choice.choice_count)
     if empty_poll_flag:
-        for choice_count in range(len(data)):
-            data[choice_count] = data[choice_count] + 1
+        labels.append("Empty")
+        data.append(1)
     context = {
         'poll':Poll.objects.get(link= link),
         'labels': labels,

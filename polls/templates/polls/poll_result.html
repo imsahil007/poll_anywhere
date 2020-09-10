@@ -31,13 +31,32 @@
           backgroundColor: [
             '#FF0000', '#ffa600', '#ff6361',  '#bc5090', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
           ],
-          label: 'Population'
+          label: 'Choices'
         }],
         labels: {{ labels|safe }}
       },
       options: {
-        responsive: true
-      }
+        responsive: true,
+        legend: {
+          labels:{
+            fontColor: 'white'
+          }
+        }
+      },
+      afterDraw: function(chart) {
+            if (chart.data.datasets[0].data.every(item => item === 0)) {
+                let ctx = chart.chart.ctx;
+                let width = chart.chart.width;
+                let height = chart.chart.height;
+
+                chart.clear();
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('No data to display', width / 2, height / 2);
+                ctx.restore();
+            }
+        },
     };
 
     window.onload = function() {
