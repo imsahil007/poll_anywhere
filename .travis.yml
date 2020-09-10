@@ -1,11 +1,15 @@
+language: python
+python:
+- 3.8
 deploy:
   provider: heroku
+  buildpack: python
   api_key:
-    secure: Ose8gV5OBupfa9Ao5KeyuQem3HpFHUMNamYLAQvFiTQwNbGiMrZnVeX0zEXmyR67ucwst2fAF+xtv40yHtYx6iukDdt0hrKSnWA0ScYRTOTJl/CT1JXgXq/pMK2TR3yae+X/aDqcBZ5XJ9ak7CgywYygAbfxSojBQ/6Qf7YqyTc/PbjKCDXK6FztBoRfz5CCH+o52zI3DSjVEtYjJRc4EMz9SWNEVQMMhk00AisRCiSLQTKUNhLNEFy3rHWyM4ysrqoUXMuGsGEP3JkUFcrfelmeWN/Wz84TpEmY0e8Tdr9w/oQjSJJNrxr1A5/7L6evy14hZnYh34LlC6UT4fONWFWJoTW1TIYy3q1q2tB3vX+nQHyoIWll1Nq+COuW8b7L4rOjwjWHcvMsVEYn1S0Fz8oLCeNgP7Ch6xLEpS46vdRUN3d6jZ1Y6/fKc4dBisX40VfqyhUMYOvlgiWSK5Gq6QLHjMALkJP3/lbBCaF/vsKSZvn4IQ4dce+ZQV7P+da+MEEmB1tJJl5Hm0rfEiztltNWIe9SCGriRNRUtUGErR1Ii1KBPVq5+x6uSqniZKG+64ROzw+HhX56sgWqqI/DxKfFh+gE7O6ESTnpIiQ7s8WKg6jC0EVhPK9WZlAVKG5YCezK//obqizs54W2hsT0AIDeGHN8FLJ22ynnG/uP5F4=
-  on: postgres
+    secure: oVrIEuwv39FiJMyVCtKKPHa6pD0Bi+j4/b3H7ass0H+1cLzNvjDyrHU9eN4lZtfhujcR7bOhD9xP0z5vt35j9z3RoUOOBCyaqM2Z8MaM2GU59oRefME/alVRrcsDtse3ran92AIyYIlPxZhmRLUK1p+4dHNezdoCnObmjAwkbX6FDvG/4NclgcFiCvu6Z27xTUHBVkgpFC2W+bhOrM3Ny0cPVJuoWCIzkQh2G4S0e+jzVOR2FodQ5FsQjaT9e1pSIgMv2f6U/0jk/fmsLCEtgdEUdNUgnqwky7qU1m2MSJw3c6toeQBRlGFKvPpwXUkckiFQZCP3if+l2AnLn9GX8ggfo8uor0kgUhKv0XOk3FY6oCJnZEE+dKmgpoznLfLEgSf+Jo8UQAnnJNK9SuffXbfPCfZlN+S9rOO7U9zbbBHTxnRWIYmSBW4CNcidr/S9O5gEyQ6pY46tqxZUyoLDkswdJEwHvZ4bZfJ7PtqiKFNc+jJY+Cfgr5XZMYSwTq8Z45ZmsJyoT8WXVbt1EFdDXkrzbmfpyQzcSU0PLlbC8YLTPzwXqFhvCBl5W5rwDeC5wd54dzLECGASTegcFRLBddqkH4SNoI/aa4qFL/xHTzuouCYKayBUYHZ/GP1I9LhbcvSLNnoS5VdFFuX4DnkFG1uBU4z9X3LeUaZ4CzR5Yto=
+  app: pollcreator
+  on:
+    repo: imsahil007/poll_anywhere
+    branch: postgres
+  skip_cleanup: 'true'
   run:
-    - "heroku run python manage.py makemigrations"
-    - restart
-    - "heroku run python manage.py migrate"
-
-
+  - "python poll_anywhere/manage.py migrate --all --settings=settings.heroku"
