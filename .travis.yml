@@ -5,6 +5,7 @@ python:
 addons:
  postgresql: 12
 # Install pip dependencies
+script: echo Deploying
 deploy:
   provider: heroku
   # strategy: git
