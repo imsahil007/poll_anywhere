@@ -1,5 +1,8 @@
 # POLL CREATOR
 ![](res/chart.png)
+
+
+
 https://pollcreator.herokuapp.com/
 
 
@@ -9,7 +12,7 @@ Polls can be deleted only by the user.
 
 The webapp also allows user to add image to each choice and each poll question.
 
-# Run the code:
+# Commands:
 ```
 python manage.py runserver
 ```
