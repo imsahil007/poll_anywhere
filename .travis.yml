@@ -1,6 +1,5 @@
-arch: arm64           # LXD container based build for OSS only
 os: linux             # required for arch different than amd64
-dist: focal
+dist: xenial
 #language
 language: python
 #cache installation
