@@ -11,7 +11,7 @@ script:
 - coverage run manage.py test
 - python manage.py makemigrations
 - python manage.py migrate
-  after_success: coveralls
+after_success: coveralls
 deploy:
   provider: heroku
   # strategy: git
