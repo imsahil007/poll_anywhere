@@ -3,8 +3,8 @@ cache: pip
 python:
 - 3.8
 # Install pip dependencies
-services:
-  - postgresql
+addons:
+ postgresql: 12
 install:
 - pip install -r requirements.txt
 script:
