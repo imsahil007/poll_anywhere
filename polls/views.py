@@ -106,8 +106,11 @@ def add_poll(request):
             c_form.append(ChoiceCreateForm( prefix = n_Choice, instance=Choice()))
             n_Choice = n_Choice + 1
         elif submit_counter == 'subtract':
-            c_form = c_form[:-1]
-            n_Choice = n_Choice - 1
+            if n_Choice > 2:
+                c_form = c_form[:-1]
+                n_Choice = n_Choice - 1
+            else:
+                messages.warning(request, "Minimum 2 fields are mandatory for a poll!")
 
         context = {
             'p_form':p_form,
