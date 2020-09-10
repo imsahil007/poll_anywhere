@@ -7,7 +7,7 @@ install:
 - pip install -r requirements.txt
 script:
 - echo "Deploying using Travis"
-- python manage.py collectstatic
+- python manage.py collectstatic --no-input
 - coverage run manage.py test
 - python manage.py makemigrations
 - python manage.py migrate
