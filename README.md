@@ -61,3 +61,7 @@ heroku run bash
 * Bootstrap
 * HTML
 
+# Todos:
+* 404 and 500 pages
+* UI enhancement
+
