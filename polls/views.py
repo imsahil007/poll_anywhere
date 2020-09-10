@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from ipware import get_client_ip
@@ -17,8 +16,6 @@ public_user = User.objects.filter(username='public').first()
 
     
 def get_ip_address(request):
-    # return HttpResponse("<h1>THIs is it</h1>")
-    
     ip = None
     try:
         ip, is_routable = get_client_ip(request)
@@ -79,30 +76,57 @@ def add_poll(request):
         current_user = public_user
     else:
         current_user = request.user
+
     if request.method == 'POST':
+        submit_counter = request.POST['submit_counter']
         p_form = PollCreateForm(request.POST,request.FILES, instance=Poll())
         n_Choice = int(request.POST['counter'])
         c_form = [ChoiceCreateForm(request.POST,request.FILES, prefix = str(x), instance=Choice()) for x in range(0,n_Choice)]
-        if p_form.is_valid() and all([cf.is_valid() for cf in c_form]):
+        
+        if submit_counter == 'submit':
+            #Submit the form 
             
-            new_poll = p_form.save(commit=False)
-            new_poll.author = current_user
-            poll_link = uuid.uuid1().hex[0:9]
-            new_poll.link = poll_link
-            new_poll.save()
-            for cf in c_form:
-                new_choice = cf.save(commit=False)
-                new_choice.poll = new_poll
-                new_choice.save()
-            messages.success(request, f'You have successfuly created a poll')
-            return redirect('poll-detail', link = poll_link)
+
+            if p_form.is_valid() and all([cf.is_valid() for cf in c_form]):
+                new_poll = p_form.save(commit=False)
+                new_poll.author = current_user
+                poll_link = uuid.uuid1().hex[0:9]
+                new_poll.link = poll_link
+                new_poll.save()
+                for cf in c_form:
+                    new_choice = cf.save(commit=False)
+                    new_choice.poll = new_poll
+                    new_choice.save()
+                messages.success(request, f'You have successfuly created a poll')
+                return redirect('poll-detail', link = poll_link)
+                
+        elif submit_counter == 'add':
+
+            #Add one field
+            c_form.append(ChoiceCreateForm( prefix = n_Choice, instance=Choice()))
+            n_Choice = n_Choice + 1
+        elif submit_counter == 'subtract':
+            c_form = c_form[:-1]
+            n_Choice = n_Choice - 1
+
+        context = {
+            'p_form':p_form,
+            'c_form':c_form,
+            'counter':n_Choice,
+            'submit_counter': 'submit'
+            }
+        return render(request, 'polls/poll_form.html',context)
+
     else:
+        n_Choice = 2
         p_form = PollCreateForm(instance=Poll())
-        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choice()) for x in range(0,2)]
+        c_form = [ChoiceCreateForm( prefix = str(x), instance=Choice()) for x in range(0,n_Choice)]
         ''' We need atleast 2 Choice for a poll '''
     context = {
         'p_form':p_form,
-        'c_form':c_form
+        'c_form':c_form,
+        'counter':n_Choice,
+        'submit_counter':'submit'
     }
     return render(request, 'polls/poll_form.html',context)
 
