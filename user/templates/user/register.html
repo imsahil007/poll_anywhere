@@ -5,14 +5,14 @@
         <div class='row'>
         <div class='col-md-3'></div>
         <div class='col-md-6'>
-        <form method='POST mx-auto'>
+        <form method='POST' class='mx-auto'>
             {% csrf_token %}
             <fieldset class='form-group mx-auto mt-5'>
                 <legend class='border-bottom mb-4'>Register today</legend>
                 {{ form | crispy }}
             </fieldset>
             <div class="form-group mx-auto mb-2">
-                <input type="submit" class="btn btn-dark mx-auto" value='Sign Up'/>
+                <button type="submit" class="btn btn-dark mx-auto">Sign Up</button>
             </div>
         </form>
         </div>
