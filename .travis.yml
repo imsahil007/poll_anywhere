@@ -11,4 +11,5 @@ deploy:
     repo: imsahil007/poll_anywhere
     branch: postgres
   run:
+  - "heroku config"
   - "python poll_anywhere/manage.py migrate --all --settings=settings.heroku"
