@@ -1,0 +1,11 @@
+deploy:
+  provider: heroku
+  api_key:
+    secure: Ose8gV5OBupfa9Ao5KeyuQem3HpFHUMNamYLAQvFiTQwNbGiMrZnVeX0zEXmyR67ucwst2fAF+xtv40yHtYx6iukDdt0hrKSnWA0ScYRTOTJl/CT1JXgXq/pMK2TR3yae+X/aDqcBZ5XJ9ak7CgywYygAbfxSojBQ/6Qf7YqyTc/PbjKCDXK6FztBoRfz5CCH+o52zI3DSjVEtYjJRc4EMz9SWNEVQMMhk00AisRCiSLQTKUNhLNEFy3rHWyM4ysrqoUXMuGsGEP3JkUFcrfelmeWN/Wz84TpEmY0e8Tdr9w/oQjSJJNrxr1A5/7L6evy14hZnYh34LlC6UT4fONWFWJoTW1TIYy3q1q2tB3vX+nQHyoIWll1Nq+COuW8b7L4rOjwjWHcvMsVEYn1S0Fz8oLCeNgP7Ch6xLEpS46vdRUN3d6jZ1Y6/fKc4dBisX40VfqyhUMYOvlgiWSK5Gq6QLHjMALkJP3/lbBCaF/vsKSZvn4IQ4dce+ZQV7P+da+MEEmB1tJJl5Hm0rfEiztltNWIe9SCGriRNRUtUGErR1Ii1KBPVq5+x6uSqniZKG+64ROzw+HhX56sgWqqI/DxKfFh+gE7O6ESTnpIiQ7s8WKg6jC0EVhPK9WZlAVKG5YCezK//obqizs54W2hsT0AIDeGHN8FLJ22ynnG/uP5F4=
+  on: postgres
+  run:
+    - "heroku run python manage.py makemigrations"
+    - restart
+    - "heroku run python manage.py migrate"
+
+
