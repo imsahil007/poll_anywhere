@@ -29,7 +29,7 @@ def get_ip_address(request):
 # Create your views here.
 def home(request):
 
-    return render(request,'polls/home.html')
+    return render(request,'polls/home.html',{"title":'Home'})
 
 
 class UserPollListView(LoginRequiredMixin,ListView):
