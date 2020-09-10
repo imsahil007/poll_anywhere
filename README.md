@@ -1,6 +1,6 @@
-# POLL CREATOR [![Build Status](https://travis-ci.org/imsahil007/poll_anywhere.svg?branch=postgres)](https://travis-ci.org/imsahil007/poll_anywhere)
-![](res/chart.png)
+# POLL CREATOR [![Build Status](https://travis-ci.org/imsahil007/poll_anywhere.svg?branch=postgres)](https://travis-ci.org/imsahil007/poll_anywhere) [![Coverage Status](https://coveralls.io/repos/github/imsahil007/poll_anywhere/badge.svg?branch=master)](https://coveralls.io/github/imsahil007/poll_anywhere?branch=master)  
 
+![](res/chart.png)
 
 
 https://pollcreator.herokuapp.com/
