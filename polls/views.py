@@ -14,7 +14,12 @@ import uuid
 
 public_user = User.objects.filter(username='public').first()
 
-    
+def error_404_view(request, exception):
+    return render(request,'polls/home.html')
+
+def error_500_view(request):
+    return redirect('home')
+
 def get_ip_address(request):
     ip = None
     try:

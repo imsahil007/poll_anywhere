@@ -20,6 +20,11 @@ from user import views as user_views
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import reverse_lazy
+from polls.views import error_404_view, error_500_view
+from django.conf.urls import handler404, handler500
+
+handler404 = error_404_view
+handler500 = error_500_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
