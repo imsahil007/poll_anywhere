@@ -11,3 +11,5 @@ pytz==2020.1
 sqlparse==0.3.1
 whitenoise==5.2.0
 coverage==4.5.4
+boto3==1.14.60
+django-storages==1.10
