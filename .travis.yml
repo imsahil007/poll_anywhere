@@ -21,11 +21,10 @@ script:
 branches:
   only:
   - postgres
-  
-branches:
-  except:
+   except:
   - master
   - backup
+ 
 #run code coverage after scripts run successfully
 # get token url from coveralls
 # add webhooks as well
@@ -37,7 +36,8 @@ after_failure:
  #deploy
 deploy:
   provider: heroku
-  skip_cleanup: true
+  cleanup: true
+  strategy: git
   api_key:
     secure: oVrIEuwv39FiJMyVCtKKPHa6pD0Bi+j4/b3H7ass0H+1cLzNvjDyrHU9eN4lZtfhujcR7bOhD9xP0z5vt35j9z3RoUOOBCyaqM2Z8MaM2GU59oRefME/alVRrcsDtse3ran92AIyYIlPxZhmRLUK1p+4dHNezdoCnObmjAwkbX6FDvG/4NclgcFiCvu6Z27xTUHBVkgpFC2W+bhOrM3Ny0cPVJuoWCIzkQh2G4S0e+jzVOR2FodQ5FsQjaT9e1pSIgMv2f6U/0jk/fmsLCEtgdEUdNUgnqwky7qU1m2MSJw3c6toeQBRlGFKvPpwXUkckiFQZCP3if+l2AnLn9GX8ggfo8uor0kgUhKv0XOk3FY6oCJnZEE+dKmgpoznLfLEgSf+Jo8UQAnnJNK9SuffXbfPCfZlN+S9rOO7U9zbbBHTxnRWIYmSBW4CNcidr/S9O5gEyQ6pY46tqxZUyoLDkswdJEwHvZ4bZfJ7PtqiKFNc+jJY+Cfgr5XZMYSwTq8Z45ZmsJyoT8WXVbt1EFdDXkrzbmfpyQzcSU0PLlbC8YLTPzwXqFhvCBl5W5rwDeC5wd54dzLECGASTegcFRLBddqkH4SNoI/aa4qFL/xHTzuouCYKayBUYHZ/GP1I9LhbcvSLNnoS5VdFFuX4DnkFG1uBU4z9X3LeUaZ4CzR5Yto=
   # django app name
