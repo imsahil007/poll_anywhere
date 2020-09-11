@@ -2,26 +2,27 @@ os: linux
 dist: xenial
 language: python
 python:
-  - '3.8'
+- '3.8'
 cache: pip
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
+- pip install -r requirements.txt
+- pip install coveralls
 script:
-  - python manage.py collectstatic --no-input
-  - python manage.py makemigrations
-  - python manage.py migrate
+- python manage.py collectstatic --no-input
+- python manage.py makemigrations
+- python manage.py migrate
 branches:
   only:
-    - postgres
+  - postgres
 after_success:
-  - coverage run manage.py test
-  - coveralls
+- coverage run manage.py test
+- coveralls
 after_failure:
-  - echo "Deployment failed"
+- echo "Deployment failed"
 deploy:
   provider: heroku
   cleanup: true
-  api_key: $HEROKU_API_KEY
+  api_key:
+    secure: jEL2Wrm669ZU9Hjf4Z8JEBGQApLIVHR4PrNgZyXS+K6sCytchjtpvn16r85Tw47EH3I1LtVRnvMgU6+WgiN887LbOQhUMjKLkyNWqhXgFqfzYFrDXa6hnu9YsSSLa0EIHqKh5X7vxC2cE+2GH6E2AzMYhliFwridLRVI3HJp2FBQeAmQtT1mlSWmPLOb7XSp/UUFziFhv3FASa0seMgmgKAmyuVzP+ZhsaLOlQS3ezxRCqwgDceLy/7t+lLrAf+lI2Vwn1hGBHPxHEea+hXhQe+WA+4uxhPM81iKUUDhyR8XfrhiFpMC/RMFWQYj9vzht7N0N2q1+ZYx99rr+YoaSqtHsEDXRSLPK2uhbJs45dHCjn8w+koi+Vg/aJW5norgUSJQqTbA+0RrU2jqo7htV92wOIk8n2edrKH0LrFaNzwiRFAuZVPQILyRw5ZGvtBACDgSl/VXpbOONdSNBXJCz6waNZ4amqTTJs/PfqCbyT+YSYEyh6y5qkS9cWkW9FswcNl+tF38Yd8drl/YVF4PcLGFp5FpufrNWDGmh4ezwnBTZmzGF6FPP5ew4avfFKcbBMH649rgNb9WdM2Ul0oXZXs65AIcgA3/jfRCpFUV95UsxRretOCboDh9fnZqps2weznjFyulwWnvxSWMf4HZf3s+f3xz8xq7lUWndMbBbYE=
   app: pollcreator
   on: postgres
