@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['pollcreator.herokuapp.com','localhost','127.0.0.1','0.0.0.0']
 
@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'polls.apps.PollsConfig',
     'crispy_forms',
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,7 +131,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
@@ -153,3 +151,5 @@ EMAIL_HOST_USER =os.environ.get('EMAIL')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD =  os.environ.get('PASSWORD')
 django_heroku.settings(locals())
+
+#We will push python manage.py collectstaic --no-input directly to heroku.
