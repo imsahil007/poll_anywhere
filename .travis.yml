@@ -1,38 +1,35 @@
-os: linux             # required for arch different than amd64
+os: linux
+#required for arch different than amd64
 dist: xenial
 #language
 language: python
 python:
-- "3.8"
+  - "3.8"
 #cache installation
 cache: pip
 #python version
 
-# Install pip dependencies
+#Install pip dependencies
 install:
-- "pip install -r requirements.txt"
-- "pip install coveralls"
+  - "pip install -r requirements.txt"
+  - "pip install coveralls"
 #scripts to run on heroku
 
 script:
-- python manage.py collectstatic --no-input
-- python manage.py makemigrations
-- python manage.py migrate
+  - python manage.py collectstatic --no-input
+  - python manage.py makemigrations
+  - python manage.py migrate
 branches:
   only:
-  - postgres
-   except:
-  - master
-  - backup
- 
+    - postgres
 #run code coverage after scripts run successfully
 # get token url from coveralls
 # add webhooks as well
-after_success: 
-- coverage run manage.py test
-- coveralls
+after_success:
+  - coverage run manage.py test
+  - coveralls
 after_failure:
-- echo "Deployment failed"
+  - echo "Deployment failed"
  #deploy
 deploy:
   provider: heroku
@@ -44,14 +41,11 @@ deploy:
   app: pollcreator
   #branch name
   on: postgres
- 
 # Travis lifecycle
-#  before_install
-#  install
-#  after_install
-#  before_script
-#  script
-#  after_script
-#  after_success or after_failure
-
-  
+# before_install
+# install
+# after_install
+# before_script
+# script
+# after_script
+# after_success or after_failure
