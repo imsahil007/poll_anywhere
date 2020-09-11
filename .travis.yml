@@ -19,6 +19,7 @@ script:
 after_success: 
 - coverage run manage.py test
 - coveralls
+- git push heroku postgres:master
 after_failure:
 - echo "Deployment failed"
  #deploy
